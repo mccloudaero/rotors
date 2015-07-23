@@ -22,11 +22,12 @@ A redesign of the alpha rotor, with the pitch at the tip reduced.  Has not been 
  
 ==Design Files==
 Each rotor contains the following Design Files:
- *.AD_PRT	- CAD file, Cubify Design Native CAD format (The software used to design the rotors)
- *.stp		- CAD file, STEP format
- *.igs		- CAD file, IGES format
- *.stl		- STL file
- *.png		- Image of the rotor design
+ *.AD_PRT		- CAD file, Cubify Design Native CAD format (The software used to design the rotors)
+ *.stp			- CAD file, STEP format
+ *.igs			- CAD file, IGES format
+ *_final.stl		- STL file of the final rotor shape
+ *_mill_shape.stl	- STL file of the shape to be milled
+ *.png			- Image of the rotor design
  
 ==Design Process==
 The CAD was built using Cubify Design. The STL file was generated using the folowing settings:
@@ -35,6 +36,16 @@ The CAD was built using Cubify Design. The STL file was generated using the folo
  Normal Deviation: 2.0 deg
  Surface Deviation: 0.02
  Maximum Cell Size: 0.5
+
+To create the mill shape in the CAD file:
+1) Unsuppress the Machine Supports 
+2) Unsuppress the Hub Support
+3) Unsuppress the Hub Support Mirror
+4) Suppress the Mounting Holes
+5) Suppress the Center Hole
+6) Suppress the Trim Tip
+
+
 
 ==Build Process==
 For each rotor there are two STL files, one is the milled shape and the second is the final rotor shape. Each rotor is machined out of a 38" x 10" x 1.75" foam block.  The machining region is 36" x 8" x 1.75", leaving an inch extra on each of the side and no extra on the top and bottom. To machine the part double sided accurately, alignment pins are helpful.  To use the pins, the same alignment holes drilled into rotor need to be drilled into the spoil board (if possible).  Dowel rods (1/4" diameter) are used as alignment pins.
