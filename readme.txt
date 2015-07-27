@@ -50,14 +50,8 @@ The toolpaths contained in this repository were generated using MeshCam (http://
 
 1) Load mill shape
 2) Choose 2-Sided Maching
-2) Define Stock Size 38" x 10" x 1.75"
-3) Create Top Rough Tool Path with 0.5" diameter tool
- A) Depth per Pass 0.25"
- B) Stepover 0.4"
- C) Feed Rate 60 in/min 
- D) Plunge Rate 10 in/min
- E) Stock to leave 0.05"
-4) Create Bottom Rough Tool Path with 0.25" diameter tool
+3) Define Stock Size 38" x 10" x 1.75"
+4) Create Top & Bottom Rough Tool Paths with 0.25" diameter tool
  A) Depth per Pass 0.25"
  B) Stepover 0.125"
  C) Feed Rate 60 in/min 
@@ -72,12 +66,10 @@ The toolpaths contained in this repository were generated using MeshCam (http://
  B) Feed Rate 60 in/min 
  C) Plunge Rate 10 in/min
 
-
 ==Build Process==
 For each rotor there are two STL files, one is the milled shape and the second is the final rotor shape. Each rotor is machined out of a 38" x 10" x 1.75" foam block.  The machining region is 36" x 8" x 1.75", leaving an inch extra on each of the side and no extra on the top and bottom. To machine the part double sided accurately, alignment pins are helpful.  To use the pins, the same alignment holes drilled into rotor need to be drilled into the spoil board (if possible).  Dowel rods (1/4" diameter) are used as alignment pins.
 
 Tool bits needed are:
-1/2" End Mill  (>=1.75" Long) for the Roughing Passes
 1/4" End Mill  (>=1.75" Long) for the Finishing Passes
 
 ==Machining Steps==
