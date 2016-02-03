@@ -21,29 +21,29 @@ The Alpha rotor was the original rotor design used for the Goliath quadcopter. T
 A redesign of the alpha rotor, with the pitch at the tip reduced.  Has not been tested.
  
 ##Design Files
-Each rotor contains the following Design Files:
- *.AD_PRT		- CAD file, Cubify Design Native CAD format (The software used to design the rotors)
- *.stp			- CAD file, STEP format
- *.igs			- CAD file, IGES format
- *_final.stl		- STL file of the final rotor shape
- *_mill_shape.stl	- STL file of the shape to be milled
- *.png			- Image of the rotor design
+Each rotor contains the following Design Files:<br>
+ *.AD_PRT		- CAD file, Cubify Design Native CAD format (The software used to design the rotors)<br>
+ *.stp			- CAD file, STEP format<br>
+ *.igs			- CAD file, IGES format<br>
+ *_final.stl		- STL file of the final rotor shape<br>
+ *_mill_shape.stl	- STL file of the shape to be milled<br>
+ *.png			- Image of the rotor design<br>
  
 ##Design Process
-The CAD was built using Cubify Design. The STL file was generated using the folowing settings:
- Units: Inches
- Format: ASCII
- Normal Deviation: 2.0 deg
- Surface Deviation: 0.02
- Maximum Cell Size: 0.5
+The CAD was built using Cubify Design. The STL file was generated using the folowing settings:<br>
+ Units: Inches<br>
+ Format: ASCII<br>
+ Normal Deviation: 2.0 deg<br>
+ Surface Deviation: 0.02<br>
+ Maximum Cell Size: 0.5<br>
 
-To create the mill shape in the CAD file:
-1) Unsuppress the Machine Supports 
-2) Unsuppress the Hub Support
-3) Unsuppress the Hub Support Mirror
-4) Suppress the Mounting Holes
-5) Suppress the Center Hole
-6) Suppress the Trim Tip
+To create the mill shape in the CAD file:<br>
+1. Unsuppress the Machine Supports
+2. Unsuppress the Hub Support
+3. Unsuppress the Hub Support Mirror
+4. Suppress the Mounting Holes
+5. Suppress the Center Hole
+6. Suppress the Trim Tip
 
 ##Toolpath Generation
 The toolpaths contained in this repository were generated using MeshCam (http://www.grzsoftware.com/). The rough steps used to create the toolpaths are below.  Feed Rates and plunge rates were driven by the need to go slower though the birch stiffness present in the propeller blanks.
