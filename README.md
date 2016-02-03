@@ -20,7 +20,7 @@ The Alpha rotor was the original rotor design used for the Goliath quadcopter. T
 ###Beta Rotor
 A redesign of the alpha rotor, with the pitch at the tip reduced.  Has not been tested.
  
-##Design Files
+###Design Files
 Each rotor contains the following Design Files:<br>
  *.AD_PRT		- CAD file, Cubify Design Native CAD format (The software used to design the rotors)<br>
  *.stp			- CAD file, STEP format<br>
@@ -72,7 +72,7 @@ For each rotor there are two STL files, one is the milled shape and the second i
 Tool bits needed are:
 1/4" End Mill  (>=1.75" Long) for the Finishing Passes
 
-##Machining Steps
+###Machining Steps
  1. Machine the Top
   1. Roughing pass: Start with the 1/2" End Mill and run rotor_XXX_top_rough
   2. Finishing pass (X direction): Switch to 1/4" End Mill and run rotor_XXX_top_finish_x_only
