@@ -38,33 +38,33 @@ The CAD was built using Cubify Design. The STL file was generated using the folo
  Maximum Cell Size: 0.5<br>
 
 To create the mill shape in the CAD file:<br>
-1. Unsuppress the Machine Supports
-2. Unsuppress the Hub Support
-3. Unsuppress the Hub Support Mirror
-4. Suppress the Mounting Holes
-5. Suppress the Center Hole
-6. Suppress the Trim Tip
+ 1. Unsuppress the Machine Supports
+ 2. Unsuppress the Hub Support
+ 3. Unsuppress the Hub Support Mirror
+ 4. Suppress the Mounting Holes
+ 5. Suppress the Center Hole
+ 6. Suppress the Trim Tip
 
 ##Toolpath Generation
 The toolpaths contained in this repository were generated using MeshCam (http://www.grzsoftware.com/). The rough steps used to create the toolpaths are below.  Feed Rates and plunge rates were driven by the need to go slower though the birch stiffness present in the propeller blanks.
 
-1) Load mill shape
-2) Choose 2-Sided Maching
-3) Define Stock Size 38" x 10" x 1.75"
-4) Create Top & Bottom Rough Tool Paths with 0.25" diameter tool
- A) Depth per Pass 0.25"
- B) Stepover 0.125"
- C) Feed Rate 60 in/min 
- D) Plunge Rate 10 in/min
- E) Stock to leave 0.05"
-5) Create Top and Bottom Finish X Only Tool Paths with 0.25" diameter tool
- A) Stepover 0.0.0833"
- B) Feed Rate 60 in/min 
- C) Plunge Rate 10 in/min
-6) Create Top and Bottom Finish X Only Tool Paths with 0.25" diameter tool
- A) Stepover 0.0.0833"
- B) Feed Rate 60 in/min 
- C) Plunge Rate 10 in/min
+ 1. Load mill shape
+ 2. Choose 2-Sided Maching
+ 3. Define Stock Size 38" x 10" x 1.75"
+ 4. Create Top & Bottom Rough Tool Paths with 0.25" diameter tool
+  1. Depth per Pass 0.25"
+  2. Stepover 0.125"
+  3. Feed Rate 60 in/min 
+  4. Plunge Rate 10 in/min
+  5. Stock to leave 0.05"
+ 5. Create Top and Bottom Finish X Only Tool Paths with 0.25" diameter tool
+  1. Stepover 0.0.0833"
+  2. Feed Rate 60 in/min 
+  3. Plunge Rate 10 in/min
+ 6. Create Top and Bottom Finish X Only Tool Paths with 0.25" diameter tool
+  1. Stepover 0.0.0833"
+  2. Feed Rate 60 in/min 
+  3. Plunge Rate 10 in/min
 
 ##Build Process
 For each rotor there are two STL files, one is the milled shape and the second is the final rotor shape. Each rotor is machined out of a 38" x 10" x 1.75" foam block.  The machining region is 36" x 8" x 1.75", leaving an inch extra on each of the side and no extra on the top and bottom. To machine the part double sided accurately, alignment pins are helpful.  To use the pins, the same alignment holes drilled into rotor need to be drilled into the spoil board (if possible).  Dowel rods (1/4" diameter) are used as alignment pins.
@@ -73,13 +73,13 @@ Tool bits needed are:
 1/4" End Mill  (>=1.75" Long) for the Finishing Passes
 
 ##Machining Steps
-1) Machine the Top
- A) Roughing pass: Start with the 1/2" End Mill and run rotor_XXX_top_rough
- B) Finishing pass (X direction): Switch to 1/4" End Mill and run rotor_XXX_top_finish_x_only
- C) Finishing pass (Y direction): Run rotor_XXX_top_finish_y_only
- D) Drill the Alignment Holes: Run rotor_XXX_top_drill_holes
-2) Flip the block over and re-mount using the alignment holes and pins
-3) Machine the Bottom
- A) Roughing pass: Run rotor_XXX_bottom_rough (Note: roughing stays with 1/4" bit because of the fragile part)
- B) Finishing pass (X direction): Run rotor_XXX_bottom_finish_x_only
- C) Finishing pass (Y direction): Run rotor_XXX_bottom_finish_y_only
+ 1. Machine the Top
+  1. Roughing pass: Start with the 1/2" End Mill and run rotor_XXX_top_rough
+  2. Finishing pass (X direction): Switch to 1/4" End Mill and run rotor_XXX_top_finish_x_only
+  3. Finishing pass (Y direction): Run rotor_XXX_top_finish_y_only
+  4. Drill the Alignment Holes: Run rotor_XXX_top_drill_holes
+ 2. Flip the block over and re-mount using the alignment holes and pins
+ 3. Machine the Bottom
+  1. Roughing pass: Run rotor_XXX_bottom_rough (Note: roughing stays with 1/4" bit because of the fragile part)
+  2. Finishing pass (X direction): Run rotor_XXX_bottom_finish_x_only
+  3. Finishing pass (Y direction): Run rotor_XXX_bottom_finish_y_only
