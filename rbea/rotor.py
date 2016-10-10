@@ -22,24 +22,43 @@ def airfoil_coef(alpha):
  #  cl = -9822.62*pow(alpha,4)-9110.65*pow(alpha,3) - 3065.66*pow(alpha,2) - 441.54*alpha - 23.8  
  #cd = 0.010 - 0.003*cl + 0.01*cl*cl	# drag coefficient NACA 2412
  cd = 0.001538*pow(cl,4) - 0.0009347*pow(cl,3) + 0.002775*pow(cl,2) - 0.000882*cl + 0.00608	# drag coefficient NACA 2412
- cd = cd*1.1 # Drag Factor
+ cd = cd*1.2 # Drag Factor
  
  return cl,cd
+
+'''
+# 63-212
+# Mach 0.4 curves
+def airfoil_coef(alpha):
+ # Linear Behaviour
+ # dCl/dalpha = 0.115 deg = 
+ cl=0.15 + 6.589*alpha  	# lift coefficient NACA 2412
+ # Non-Linear Behaviour
+ if cl > 0.98:
+  cl = 0.98
+ cd = 0.02
+ cd = cd*1.2 # Drag Factor
+ 
+ return cl,cd
+'''
 
 pi = math.pi
 
 # Rotor Inputs (metric)
-diameter = 0.9144	# meters
+diameter = .9144	# meters
+#diameter = 1.016	# meters
 blades = 2.0		# number of blades
 root_chord = 0.1143	# meters
 tip_chord = 0.1016	# meters
-root_theta = 20.0	# degrees
+root_theta = 22.0	# degrees
 tip_theta = 6.0		# degrees
+#tip_theta = 5.0	# degrees
 RPMs = [2200,2310,2420,2640,2820,3080,3300,3410,3520,3740,3960]		# rotor speed in RPM
 
 # Atmospheric Inputs
 # Note: rho = 1.225 (kg/m3) standard sea level atmosphere density @ 70 F
-rho = 1.1644	# Sea level pressure, 30 C
+#rho = 1.1644	# Sea level pressure, 30 C
+rho = 1.225	# Sea level pressure, 30 C
 
 # Initial Calculations
 tip_radius = diameter/2
@@ -77,8 +96,8 @@ print 'RPM\tT(N)\tP(kW)\tT(lbf)\tP(Hp)\tFM'
   
 for RPM in RPMs:
  # Initial Calcs at RPM
- n = RPM/60					# RPS
- omega = n*2*pi				# angular velocity
+ n = RPM/60			# RPS
+ omega = n*2*pi			# angular velocity
  V_tip = omega*tip_radius	# tip velocity
 
  # Initialize/Clear Lists
@@ -96,9 +115,9 @@ for RPM in RPMs:
   iter = 0
   finished = False
   while( finished == False):
-   v_axial = v_inflow					# axial velocity
+   v_axial = v_inflow				# axial velocity
    #v_radial = omega*radius[i] - v_swirl	# disk plane velocity
-   v_radial = omega*radius[i]	# disk plane velocity
+   v_radial = omega*radius[i]			# disk plane velocity
    phi_rad = math.atan2(v_axial,v_radial)	# flow angle (radians)
    alpha_rad[i] = theta_rad[i]- phi_rad		# blade angle of attack
    cl,cd = airfoil_coef(alpha_rad[i])
@@ -137,6 +156,8 @@ for RPM in RPMs:
  for i in range(elements):
   theta[i] = theta[i]*180/pi
   alpha_rad[i] = alpha_rad[i]*180/pi
+  #print i,alpha_rad[i]
+
  
  # Totals
  T = sum(thrust)			# total thrust (N) 
