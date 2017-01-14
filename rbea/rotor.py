@@ -50,8 +50,8 @@ diameter = .9144	# meters
 blades = 2.0		# number of blades
 root_chord = 0.1143	# meters
 tip_chord = 0.1016	# meters
-root_theta = 22.0	# degrees
-tip_theta = 6.0		# degrees
+root_theta = 18.0	# degrees
+tip_theta = 5.0		# degrees
 #tip_theta = 5.0	# degrees
 RPMs = [2200,2310,2420,2640,2820,3080,3300,3410,3520,3740,3960]		# rotor speed in RPM
 
@@ -62,7 +62,8 @@ rho = 1.225	# Sea level pressure, 30 C
 
 # Initial Calculations
 tip_radius = diameter/2
-root_radius = 0.1*tip_radius
+#root_radius = 0.1*tip_radius
+root_radius = 0.1143
 area = pi*diameter*diameter/4
 avg_chord = (root_chord + tip_chord)/2
 sigma=2*avg_chord/2/pi/tip_radius			# solidity
