@@ -1,4 +1,5 @@
 #CFD Analysis
 
-1. Create simplified geometry (CAD)
-2. Mesh simplified geometry (gmsh)
+#. Create simplified geometry (CAD)
+##. Export as STEP 214
+#. Mesh simplified geometry (gmsh)
