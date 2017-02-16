@@ -12,24 +12,7 @@ import scipy.interpolate
 # alpha_rad	- The effective angle of attack the airfoil experiences
 # alpha_rad + phi = theta
 
-# Airfoil Aerodynamic Coefs
-# If using an Airfoil other than the NACA 2412, simply replace this function one tailored to the
-# new airfoil
-def airfoil_coef(alpha):
- # Linear Behaviour
- cl=0.25 + 5.93*alpha  	# lift coefficient NACA 2412
- # Non-Linear Behaviour
- if(cl > 1.43):
-   cl = 5612.93*pow(alpha,4)-5694.98*pow(alpha,3) + 2077.74*pow(alpha,2) - 321.77*alpha + 19.19  
- #if(cl < -0.8):
- #  cl = -9822.62*pow(alpha,4)-9110.65*pow(alpha,3) - 3065.66*pow(alpha,2) - 441.54*alpha - 23.8  
- #cd = 0.010 - 0.003*cl + 0.01*cl*cl	# drag coefficient NACA 2412
- cd = 0.001538*pow(cl,4) - 0.0009347*pow(cl,3) + 0.002775*pow(cl,2) - 0.000882*cl + 0.00608	# drag coefficient NACA 2412
- cd = cd*1.2 # Drag Factor
- 
- return cl,cd
 
-'''
 # 63-212
 # Mach 0.4 curves
 def airfoil_coef(alpha):
@@ -43,7 +26,6 @@ def airfoil_coef(alpha):
  cd = cd*1.2 # Drag Factor
  
  return cl,cd
-'''
 
 pi = math.pi
 
@@ -111,6 +93,12 @@ for i in range(num_elements):
  theta_rad.append(theta[i]/180*pi)
  alpha_rad.append(0)
 
+# Specified Theta
+#theta = [18.00, 17.34, 16.68, 16.03, 15.37, 14.71, 14.05, 13.39, 12.74, 12.08, 11.42, 10.76, 10.10, 9.44, 8.79, 8.13, 7.47, 6.82, 6.16, 5.50]
+#for i in range(num_elements):
+# theta_rad[i] = (theta[i]/180*pi)
+#print theta
+
 for RPM in RPMs:
  # Initial Calcs at RPM
  n = RPM/60			# RPS
@@ -168,12 +156,13 @@ for RPM in RPMs:
    # check for convergence
    if ( math.fabs(v_inflow_new-v_inflow)< 0.001):
     finished = True
-   # check to see if iteration stuck
-   elif(iter>2000):
+   # check to see if iterations are stuck
+   elif(iter>maximum_iterations):
     finished=True
+    print 'RPM:',RPM,'element:',i,'exceed maximum number of iterations (',maximum_iterations,')'
   
    # Updates Values
-   v_inflow = v_inflow + 0.5*(v_inflow_new-v_inflow)
+   v_inflow = v_inflow + relaxation_factor*(v_inflow_new-v_inflow)
    #v_swirl = v_inflow + 0.5*(v_swirl_new-v_swirl)    
   
   phi = phi_rad*180/pi
@@ -182,7 +171,7 @@ for RPM in RPMs:
   drag.append(DdDr*r_inc)
   torque.append(DqDr*r_inc)
 
-  #print RPM,i,iter
+  #print RPM,i,v_inflow
 
  # Convert radians to degrees
  radial_output.write('{:d}\t'.format(RPM))
@@ -193,7 +182,7 @@ for RPM in RPMs:
  radial_output.write('\n')
  
  # Totals
- T = sum(thrust)			# total thrust (N) 
+ T = sum(thrust)		# total thrust (N) 
  P = sum(torque)*omega/1000	# total power (kW)
  
  # Ideals
@@ -213,8 +202,7 @@ for RPM in RPMs:
  
  FM = P_ideal/P
  M_tip = v_mag/a
- total_output.write('{:d}\t{:5.2f}\t{:5.2f}\t{:5.2f}\t{:5.2f}\t{:5.3f}\t{:5.3f}\n'.format(RPM,T,P,T_imp,P_imp,FM,M_tip))
-
+ total_output.write('{:d}\t{:5.2f}\t{:5.2f}\t{:5.2f}\t{:5.2f}\t{:5.3f}\t{:5.3f}\t{:5.3f}\n'.format(RPM,T,P,T_imp,P_imp,FM,M_tip,v_ideal))
 
 # Close total_output
 total_output.close()
