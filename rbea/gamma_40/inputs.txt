@@ -1,11 +1,13 @@
 # Rotor Inputs (metric)
-diameter = .9144	# meters (36")
+#diameter = .9144	# meters (36")
+diameter = 1.016	# meters (40")
 root_radius = 0.1143    # meters (4")
 blades = 2.0		# number of blades
+#root_chord = 0.127	# meters (5")
 root_chord = 0.1143	# meters (4.5")
 tip_chord = 0.1016	# meters (4")
-root_theta = 18.0	# degrees
-tip_theta = 5.5		# degrees
+root_theta = 16.0	# degrees
+tip_theta = 4.0		# degrees
 #airfoil_name = 'naca_2412'
 airfoil_name = 'rc6-08'
 
@@ -20,4 +22,6 @@ a = 343		# Speed of Sound m/s
 
 # Solver Settings
 num_elements = 20
+relaxation_factor = 0.4
+maximum_iterations = 2000
 drag_factor = 1.2
