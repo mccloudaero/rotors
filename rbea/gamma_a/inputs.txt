@@ -5,12 +5,12 @@ blades = 2.0		# number of blades
 root_chord = 0.1143	# meters (4.5")
 tip_chord = 0.1016	# meters (4")
 root_theta = 18.0	# degrees
-tip_theta = 5.0		# degrees
-airfoil_name = 'naca_2412'
-#airfoil_name = 'rc6-08'
+tip_theta = 5.5		# degrees
+#airfoil_name = 'naca_2412'
+airfoil_name = 'rc6-08'
 
 # Rotor RPMs to analyze
-RPMs = [2200,2310,2420,2640,2820,3080,3300,3410,3520,3740,3960]		# rotor speed in RPM
+RPMs = [2200,2420,2640,2860,3080,3300,3520,3740,3960]		# rotor speed in RPM
 
 # Atmospheric Inputs
 # Note: rho = 1.225 (kg/m3) standard sea level atmosphere density @ 70 F
