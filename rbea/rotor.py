@@ -12,44 +12,93 @@ import scipy.interpolate
 # alpha_rad	- The effective angle of attack the airfoil experiences
 # alpha_rad + phi = theta
 
-
-# 63-212
-# Mach 0.4 curves
-def airfoil_coef(alpha):
- # Linear Behaviour
- # dCl/dalpha = 0.115 deg = 
- cl=0.15 + 6.589*alpha  	# lift coefficient NACA 2412
- # Non-Linear Behaviour
- if cl > 0.98:
-  cl = 0.98
- cd = 0.02
- cd = cd*1.2 # Drag Factor
- 
- return cl,cd
-
 pi = math.pi
 
 # Read inputs file
 execfile('inputs.txt')
 
-# Read airfoil data
-airfoil = np.loadtxt('./airfoils/'+airfoil_name+'.dat',skiprows=1,delimiter=',')
-# Create splines
-mach_data = airfoil[:,0]
-alpha_data = airfoil[:,1]
-cd_data = airfoil[:,2]
-cl_data = airfoil[:,3]
-# Determine Mach Range
-if min(mach_data) == max(mach_data):
- # Single Mach Number present, Create 1D splines
- airfoil_data_type = '1D'
- cd_spline = scipy.interpolate.splrep(alpha_data,cd_data)
- cl_spline = scipy.interpolate.splrep(alpha_data,cl_data)
+# Determine airfoil method
+try:
+ airfoil_name
+except:
+ # airfoil_name is not defined, see if tip & root airfoil names exist
+ try:
+  tip_airfoil_name
+ except NameError:
+  print 'Neither airfoil_name nor tip_airfoil_name in inputs file'
+  print 'Exiting!'
+  sys.exit(1)
+ else:
+  # tip_airfoil_name exists, see if root_airfoil_name exists
+  try:
+   root_airfoil_name
+  except:
+   print 'root_airfoil_name is not defined in the inputs file'
+   print 'Exiting!'
+   sys.exit(1)
+  else:
+   airfoil_type = 'blended' 
 else:
- # Multiple Mach Numbers prsent, Create 2D splines
- airfoil_data_type = '2D'
- cd_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cd_data)
- cl_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cl_data)
+ airfoil_type = 'single' 
+
+# Read airfoil data
+if airfoil_type == 'single':
+ airfoil = np.loadtxt('./airfoils/'+airfoil_name+'.dat',skiprows=1,delimiter=',')
+ # Create splines
+ mach_data = airfoil[:,0]
+ alpha_data = airfoil[:,1]
+ cd_data = airfoil[:,2]
+ cl_data = airfoil[:,3]
+ # Determine Mach Range
+ if min(mach_data) == max(mach_data):
+  # Single Mach Number present, Create 1D splines
+  airfoil_data_type = '1D'
+  cd_spline = scipy.interpolate.splrep(alpha_data,cd_data)
+  cl_spline = scipy.interpolate.splrep(alpha_data,cl_data)
+ else:
+  # Multiple Mach Numbers present, Create 2D splines
+  airfoil_data_type = '2D'
+  cd_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cd_data)
+  cl_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cl_data)
+else:
+ # Tip
+ airfoil = np.loadtxt('./airfoils/'+tip_airfoil_name+'.dat',skiprows=1,delimiter=',')
+ # Create splines
+ mach_data = airfoil[:,0]
+ alpha_data = airfoil[:,1]
+ cd_data = airfoil[:,2]
+ cl_data = airfoil[:,3]
+ # Determine Mach Range
+ if min(mach_data) == max(mach_data):
+  # Single Mach Number present, Create 1D splines
+  tip_airfoil_data_type = '1D'
+  tip_cd_spline = scipy.interpolate.splrep(alpha_data,cd_data)
+  tip_cl_spline = scipy.interpolate.splrep(alpha_data,cl_data)
+ else:
+  # Multiple Mach Numbers present, Create 2D splines
+  tip_airfoil_data_type = '2D'
+  tip_cd_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cd_data)
+  tip_cl_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cl_data)
+
+ # Root 
+ airfoil = np.loadtxt('./airfoils/'+root_airfoil_name+'.dat',skiprows=1,delimiter=',')
+ # Create splines
+ mach_data = airfoil[:,0]
+ alpha_data = airfoil[:,1]
+ cd_data = airfoil[:,2]
+ cl_data = airfoil[:,3]
+ # Determine Mach Range
+ if min(mach_data) == max(mach_data):
+  # Single Mach Number present, Create 1D splines
+  root_airfoil_data_type = '1D'
+  root_cd_spline = scipy.interpolate.splrep(alpha_data,cd_data)
+  root_cl_spline = scipy.interpolate.splrep(alpha_data,cl_data)
+ else:
+  # Multiple Mach Numbers present, Create 2D splines
+  root_airfoil_data_type = '2D'
+  root_cd_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cd_data)
+  root_cl_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cl_data)
+
 
 # Initial Calculations
 tip_radius = diameter/2
@@ -75,7 +124,7 @@ torque = []
 # Initialize total_output file
 total_output = open('./output.txt','w')
 # Print Data Header
-total_output.write('RPM\tT(N)\tP(kW)\tT(lbf)\tP(Hp)\tFM\tM_tip\n')
+total_output.write('RPM\tT(N)\tP(kW)\tT(lbf)\tP(Hp)\tFM\tM_tip\tv_induced\n')
   
 # Initialize total_output file
 radial_output = open('./radial_output.txt','w')
@@ -132,12 +181,35 @@ for RPM in RPMs:
    alpha = min(alpha,12)
 
    # Find section coefficients
-   if airfoil_data_type == '1D':
-    cd = scipy.interpolate.splev(alpha,cd_spline) 
-    cl = scipy.interpolate.splev(alpha,cl_spline) 
-   elif airfoil_data_type == '2D':
-    cd = scipy.interpolate.bisplev(mach,alpha,cd_spline) 
-    cl = scipy.interpolate.bisplev(mach,alpha,cl_spline) 
+   if airfoil_type == 'single':
+    if airfoil_data_type == '1D':
+     cd = scipy.interpolate.splev(alpha,cd_spline) 
+     cl = scipy.interpolate.splev(alpha,cl_spline) 
+    elif airfoil_data_type == '2D':
+     cd = scipy.interpolate.bisplev(mach,alpha,cd_spline) 
+     cl = scipy.interpolate.bisplev(mach,alpha,cl_spline) 
+   else:
+    # Tip
+    if tip_airfoil_data_type == '1D':
+     tip_cd = scipy.interpolate.splev(alpha,tip_cd_spline) 
+     tip_cl = scipy.interpolate.splev(alpha,tip_cl_spline) 
+    elif tip_airfoil_data_type == '2D':
+     tip_cd = scipy.interpolate.bisplev(mach,alpha,tip_cd_spline) 
+     tip_cl = scipy.interpolate.bisplev(mach,alpha,tip_cl_spline) 
+    # Root
+    if root_airfoil_data_type == '1D':
+     root_cd = scipy.interpolate.splev(alpha,root_cd_spline) 
+     root_cl = scipy.interpolate.splev(alpha,root_cl_spline) 
+    elif root_airfoil_data_type == '2D':
+     root_cd = scipy.interpolate.bisplev(mach,alpha,root_cd_spline) 
+     root_cl = scipy.interpolate.bisplev(mach,alpha,root_cl_spline) 
+    # Interpolate cd and cl
+    tip_portion = float(i)/(num_elements-1)
+    root_portion = float(num_elements-1-i)/(num_elements-1)
+    cd = tip_portion*tip_cd + root_portion*root_cd
+    cl = tip_portion*tip_cl + root_portion*root_cl
+
+    
    # Appply drag factor
    cd = cd*drag_factor   
    

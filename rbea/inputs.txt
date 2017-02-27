@@ -1,16 +1,20 @@
 # Rotor Inputs (metric)
 diameter = .9144	# meters (36")
+#diameter = 1.016	# meters (40")
 root_radius = 0.1143    # meters (4")
 blades = 2.0		# number of blades
-root_chord = 0.1143	# meters (4.5")
+#root_chord = 0.127	# meters (5")
+root_chord = 0.13716	# meters (5.4")
 tip_chord = 0.1016	# meters (4")
-root_theta = 18.0	# degrees
-tip_theta = 5.0		# degrees
-airfoil_name = 'naca_2412'
+root_theta = 14.5	# degrees
+tip_theta = 6.0		# degrees
 #airfoil_name = 'rc6-08'
+tip_airfoil_name = 'rc6-08'
+#root_airfoil_name = 'rc4-10'
+root_airfoil_name = 'rc5-10'
 
 # Rotor RPMs to analyze
-RPMs = [2200,2310,2420,2640,2820,3080,3300,3410,3520,3740,3960]		# rotor speed in RPM
+RPMs = [2200,2420,2640,2860,3080,3300,3520,3740,3960]		# rotor speed in RPM
 
 # Atmospheric Inputs
 # Note: rho = 1.225 (kg/m3) standard sea level atmosphere density @ 70 F
@@ -20,4 +24,6 @@ a = 343		# Speed of Sound m/s
 
 # Solver Settings
 num_elements = 20
+relaxation_factor = 0.35
+maximum_iterations = 2000
 drag_factor = 1.2
