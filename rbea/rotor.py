@@ -49,17 +49,20 @@ if airfoil_type == 'single':
  alpha_data = airfoil[:,1]
  cd_data = airfoil[:,2]
  cl_data = airfoil[:,3]
+ cm_data = airfoil[:,4]
  # Determine Mach Range
  if min(mach_data) == max(mach_data):
   # Single Mach Number present, Create 1D splines
   airfoil_data_type = '1D'
   cd_spline = scipy.interpolate.splrep(alpha_data,cd_data)
   cl_spline = scipy.interpolate.splrep(alpha_data,cl_data)
+  cm_spline = scipy.interpolate.splrep(alpha_data,cm_data)
  else:
   # Multiple Mach Numbers present, Create 2D splines
   airfoil_data_type = '2D'
   cd_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cd_data)
   cl_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cl_data)
+  cm_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cm_data)
 else:
  # Tip
  airfoil = np.loadtxt('./airfoils/'+tip_airfoil_name+'.dat',skiprows=1,delimiter=',')
@@ -68,17 +71,20 @@ else:
  alpha_data = airfoil[:,1]
  cd_data = airfoil[:,2]
  cl_data = airfoil[:,3]
+ cm_data = airfoil[:,4]
  # Determine Mach Range
  if min(mach_data) == max(mach_data):
   # Single Mach Number present, Create 1D splines
   tip_airfoil_data_type = '1D'
   tip_cd_spline = scipy.interpolate.splrep(alpha_data,cd_data)
   tip_cl_spline = scipy.interpolate.splrep(alpha_data,cl_data)
+  tip_cm_spline = scipy.interpolate.splrep(alpha_data,cm_data)
  else:
   # Multiple Mach Numbers present, Create 2D splines
   tip_airfoil_data_type = '2D'
   tip_cd_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cd_data)
   tip_cl_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cl_data)
+  tip_cm_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cm_data)
 
  # Root 
  airfoil = np.loadtxt('./airfoils/'+root_airfoil_name+'.dat',skiprows=1,delimiter=',')
@@ -87,18 +93,20 @@ else:
  alpha_data = airfoil[:,1]
  cd_data = airfoil[:,2]
  cl_data = airfoil[:,3]
+ cm_data = airfoil[:,4]
  # Determine Mach Range
  if min(mach_data) == max(mach_data):
   # Single Mach Number present, Create 1D splines
   root_airfoil_data_type = '1D'
   root_cd_spline = scipy.interpolate.splrep(alpha_data,cd_data)
   root_cl_spline = scipy.interpolate.splrep(alpha_data,cl_data)
+  root_cm_spline = scipy.interpolate.splrep(alpha_data,cm_data)
  else:
   # Multiple Mach Numbers present, Create 2D splines
   root_airfoil_data_type = '2D'
   root_cd_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cd_data)
   root_cl_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cl_data)
-
+  root_cm_spline = scipy.interpolate.bisplrep(mach_data,alpha_data,cm_data)
 
 # Initial Calculations
 tip_radius = diameter/2
@@ -124,7 +132,7 @@ torque = []
 # Initialize total_output file
 total_output = open('./output.txt','w')
 # Print Data Header
-total_output.write('RPM\tT(N)\tP(kW)\tT(lbf)\tP(Hp)\tFM\tM_tip\tv_induced\n')
+total_output.write(' RPM\tT(N)\tP(kW)\tM(N-m)\\(kg-cm)\t\tT(lbf)\tP(Hp)\tM(ft-lb)\t\tFM\tM_tip\tv_induced\n')
   
 # Initialize total_output file
 radial_output = open('./radial_output.txt','w')
@@ -150,13 +158,14 @@ for i in range(num_elements):
 
 for RPM in RPMs:
  # Initial Calcs at RPM
- n = RPM/60			# RPS
- omega = n*2*pi			# angular velocity
+ n = RPM/60					# RPS
+ omega = n*2*pi				# angular velocity
  V_tip = omega*tip_radius	# tip velocity
 
  # Initialize/Clear Lists
  thrust = []
- drag =[]
+ drag = []
+ moment = []
  torque = []
 
  for i in range(num_elements):
@@ -183,32 +192,38 @@ for RPM in RPMs:
    # Find section coefficients
    if airfoil_type == 'single':
     if airfoil_data_type == '1D':
-     cd = scipy.interpolate.splev(alpha,cd_spline) 
-     cl = scipy.interpolate.splev(alpha,cl_spline) 
+	 cd = scipy.interpolate.splev(alpha,cd_spline)
+	 cl = scipy.interpolate.splev(alpha,cl_spline)
+	 cm = scipy.interpolate.splev(alpha,cm_spline) 
     elif airfoil_data_type == '2D':
-     cd = scipy.interpolate.bisplev(mach,alpha,cd_spline) 
-     cl = scipy.interpolate.bisplev(mach,alpha,cl_spline) 
+	 cd = scipy.interpolate.bisplev(mach,alpha,cd_spline)
+	 cl = scipy.interpolate.bisplev(mach,alpha,cl_spline)
+	 cm = scipy.interpolate.bisplev(mach,alpha,cm_spline) 
    else:
     # Tip
     if tip_airfoil_data_type == '1D':
      tip_cd = scipy.interpolate.splev(alpha,tip_cd_spline) 
      tip_cl = scipy.interpolate.splev(alpha,tip_cl_spline) 
+     tip_cm = scipy.interpolate.splev(alpha,tip_cm_spline) 
     elif tip_airfoil_data_type == '2D':
      tip_cd = scipy.interpolate.bisplev(mach,alpha,tip_cd_spline) 
      tip_cl = scipy.interpolate.bisplev(mach,alpha,tip_cl_spline) 
+     tip_cm = scipy.interpolate.bisplev(mach,alpha,tip_cm_spline) 
     # Root
     if root_airfoil_data_type == '1D':
      root_cd = scipy.interpolate.splev(alpha,root_cd_spline) 
      root_cl = scipy.interpolate.splev(alpha,root_cl_spline) 
+     root_cm = scipy.interpolate.splev(alpha,root_cm_spline) 
     elif root_airfoil_data_type == '2D':
      root_cd = scipy.interpolate.bisplev(mach,alpha,root_cd_spline) 
      root_cl = scipy.interpolate.bisplev(mach,alpha,root_cl_spline) 
-    # Interpolate cd and cl
+     root_cm = scipy.interpolate.bisplev(mach,alpha,root_cm_spline) 
+    # Interpolate cd, cl, cm
     tip_portion = float(i)/(num_elements-1)
     root_portion = float(num_elements-1-i)/(num_elements-1)
     cd = tip_portion*tip_cd + root_portion*root_cd
     cl = tip_portion*tip_cl + root_portion*root_cl
-
+    cm = tip_portion*tip_cm + root_portion*root_cm
     
    # Appply drag factor
    cd = cd*drag_factor   
@@ -216,6 +231,7 @@ for RPM in RPMs:
    q = 0.5*rho*pow(v_mag,2)								# local dynamic pressure
    DtDr = q*blades*chord[i]*(cl*math.cos(phi_rad)-cd*math.sin(phi_rad))			# thrust grading
    DdDr = q*blades*chord[i]*(cd*math.cos(phi_rad)+cl*math.sin(phi_rad))			# drag grading
+   DmDr = q*blades*chord[i]*cm													# moment grading
    DqDr = q*blades*chord[i]*radius[i]*(cd*math.cos(phi_rad)+cl*math.sin(phi_rad))	# torque grading
    
    # momentum check on inflow and swirl factors
@@ -241,6 +257,7 @@ for RPM in RPMs:
   alpha = alpha_rad[i]*180/pi 
   thrust.append(DtDr*r_inc)
   drag.append(DdDr*r_inc)
+  moment.append(DmDr*r_inc)
   torque.append(DqDr*r_inc)
 
   #print RPM,i,v_inflow
@@ -254,8 +271,10 @@ for RPM in RPMs:
  radial_output.write('\n')
  
  # Totals
- T = sum(thrust)		# total thrust (N) 
+ T = sum(thrust)			# total thrust (N)
  P = sum(torque)*omega/1000	# total power (kW)
+ M = sum(moment)			# total moment (N-m) 
+ M_kg = M*10.1971621298		# total moment (kg-cm)
  
  # Ideals
  v_ideal = pow((T/(2*rho*pi*pow(tip_radius,2))),0.5) # Ideal Induced Velocity (m/s)
@@ -269,12 +288,13 @@ for RPM in RPMs:
  B = 1 - pow(2*ct,2)/2
  P = P_ideal/B + (P - P_ideal)
  
- T_imp = T*0.224808943		# N to lbf
+ T_imp = T*0.224808943			# N to lbf
  P_imp = P*0.00134102209*1000	# kW to Hp
+ M_imp = M*0.737562149			# N-m to ft-lbf
  
  FM = P_ideal/P
  M_tip = v_mag/a
- total_output.write('{:d}\t{:5.2f}\t{:5.2f}\t{:5.2f}\t{:5.2f}\t{:5.3f}\t{:5.3f}\t{:5.3f}\n'.format(RPM,T,P,T_imp,P_imp,FM,M_tip,v_ideal))
+ total_output.write('{:5d}\t{:5.2f}\t{:5.2f}\t{:6.3f}\\{:6.3f}\t\t{:5.2f}\t{:5.2f}\t{:6.3f}\t\t{:5.3f}\t{:5.3f}\t{:5.3f}\n'.format(RPM,T,P,M,M_kg,T_imp,P_imp,M_imp,FM,M_tip,v_ideal))
 
 # Close total_output
 total_output.close()
