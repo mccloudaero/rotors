@@ -1,5 +1,5 @@
 %
-(FILENAME: rotor_ccw_bottom_finish_0p25_end_mill.nc)
+(FILENAME: rotor_ccw_bottom_combined_0p25_end_mill.nc)
 (STOCK/BLOCK, 37.000, 7.000, 1.750, -0.000, -0.000, 1.750)
 G20G64G17
 G90
